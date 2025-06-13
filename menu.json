@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Pizza Margherita",
+    "description": "Pizza traditionnelle avec tomate, mozzarella et basilic frais",
+    "price": 12.50,
+    "image": "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=300&h=200&fit=crop",
+    "category": "Pizzas"
+  },
+  {
+    "id": 2,
+    "name": "Tacos Poulet",
+    "description": "Tacos garni de poulet grillé, salade, tomates et sauce fromagère",
+    "price": 8.90,
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
+    "category": "Tacos"
+  },
+  {
+    "id": 3,
+    "name": "Salade César",
+    "description": "Salade verte, croûtons, parmesan, poulet grillé et sauce César",
+    "price": 9.50,
+    "image": "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop",
+    "category": "Salades"
+  },
+  {
+    "id": 4,
+    "name": "Burger Classic",
+    "description": "Burger avec steak haché, fromage, salade, tomate et frites",
+    "price": 11.00,
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop",
+    "category": "Burgers"
+  },
+  {
+    "id": 5,
+    "name": "Wrap Végétarien",
+    "description": "Wrap aux légumes grillés, houmous et graines de tournesol",
+    "price": 7.50,
+    "image": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=300&h=200&fit=crop",
+    "category": "Wraps"
+  },
+  {
+    "id": 6,
+    "name": "Pâtes Carbonara",
+    "description": "Pâtes fraîches à la crème, lardons et parmesan",
+    "price": 10.50,
+    "image": "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=300&h=200&fit=crop",
+    "category": "Pâtes"
+  }
+]
