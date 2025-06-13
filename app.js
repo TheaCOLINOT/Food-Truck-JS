@@ -1,5 +1,6 @@
 let panier = JSON.parse(localStorage.getItem("panier")) || [];
 let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
+let historiqueCommandes = JSON.parse(localStorage.getItem("historiqueCommandes")) || [];
 
 async function chargerMenu() {
   try {
@@ -12,7 +13,6 @@ async function chargerMenu() {
   }
 }
 
-// image fallback si non trouvée
 function chargerImageAvecFallback(imgElement, urlPrincipale) {
   imgElement.src = urlPrincipale;
   imgElement.onerror = () => {
@@ -57,7 +57,6 @@ function afficherMenu(menu) {
   });
 }
 
-// panier
 function ajouterAuPanier(idPlat) {
   const plat = panier.find(p => p.id === idPlat);
   if (plat) {
@@ -103,11 +102,11 @@ document.getElementById("btn-vider-panier").addEventListener("click", () => {
 
   if (confirm("Êtes-vous sûr de vouloir vider le panier ?")) {
     panier = [];
+    localStorage.setItem("panier", JSON.stringify(panier));
     mettreAJourPanier();
     afficherToaster("Panier vidé.");
   }
 });
-
 
 function changerQuantite(id, delta) {
   const item = panier.find(p => p.id === id);
@@ -130,8 +129,6 @@ function afficherToaster(message, type = "info") {
   setTimeout(() => toaster.remove(), 3000);
 }
 
-
-// recap commande
 document.getElementById("btn-commander").addEventListener("click", afficherRecapitulatif);
 
 async function afficherRecapitulatif() {
@@ -169,7 +166,6 @@ async function afficherRecapitulatif() {
   recap.appendChild(annulerBtn);
 }
 
-// commande
 async function validerCommande() {
   if (commandes.length >= 5) {
     afficherToaster("Limite de 5 commandes atteinte !", "error");
@@ -187,7 +183,7 @@ async function validerCommande() {
     afficherCommandes();
 
     await fakePostCommande();
-    recap.innerHTML += `<p id=\"commande-${commandeId}\">Préparation... <button onclick=\"annulerCommande(${commandeId})\">Annuler</button></p>`;
+    recap.innerHTML += `<p id="commande-${commandeId}">Préparation... <button onclick="annulerCommande(${commandeId})">Annuler</button></p>`;
 
     nouvelleCommande.timer = setTimeout(() => {
       recap.innerHTML += "<p>En livraison...</p>";
@@ -198,6 +194,12 @@ async function validerCommande() {
         afficherCommandes();
       }, 2000);
     }, 2000);
+
+    // Historique
+    const date = new Date().toLocaleString();
+    historiqueCommandes.push({ date, items: [...panier] });
+    localStorage.setItem("historiqueCommandes", JSON.stringify(historiqueCommandes));
+    afficherHistoriqueCommandes();
 
     panier = [];
     localStorage.removeItem("panier");
@@ -228,13 +230,48 @@ function afficherCommandes() {
   });
 }
 
+async function afficherHistoriqueCommandes() {
+  const container = document.getElementById("liste-historique");
+  if (!container) return;
+
+  const response = await fetch("menu.json");
+  const menu = await response.json();
+
+  container.innerHTML = "<h3>Historique des commandes</h3>";
+
+  historiqueCommandes.forEach((commande, index) => {
+    const bloc = document.createElement("div");
+    bloc.className = "commande";
+    bloc.innerHTML = `<strong>Commande #${index + 1}</strong> (${commande.date})<br/>`;
+
+    let total = 0;
+    commande.items.forEach(item => {
+      const plat = menu.find(p => p.id === item.id);
+      if (plat) {
+        const prix = plat.price * item.quantite;
+        bloc.innerHTML += `${plat.name} x ${item.quantite} = ${prix.toFixed(2)} €<br/>`;
+        total += prix;
+      }
+    });
+
+    const ttc = total * 1.2;
+    bloc.innerHTML += `<strong>Total TTC : ${ttc.toFixed(2)} €</strong>`;
+    bloc.style.border = "1px solid #ccc";
+    bloc.style.margin = "10px 0";
+    bloc.style.padding = "8px";
+    bloc.style.backgroundColor = "#f8f8f8";
+
+    container.appendChild(bloc);
+  });
+}
+
 function fakePostCommande() {
   return new Promise(resolve => setTimeout(() => resolve("OK"), 1000));
 }
 
-// chargement initial
 document.addEventListener("DOMContentLoaded", () => {
   chargerMenu();
   mettreAJourPanier();
   afficherCommandes();
+  afficherHistoriqueCommandes();
 });
